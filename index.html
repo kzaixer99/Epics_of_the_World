@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Epic Chronicles of the World</title>
+    <title>Terra • Interactive Globe</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IM+Fell+English:ital@0;1&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Work+Sans:wght@300;400;500&display=swap');
+        
+        :root {
+            --primary-bg: #0a0e1a;
+            --secondary-bg: #141824;
+            --accent-blue: #4a9eff;
+            --accent-gold: #ffd700;
+            --text-primary: #e8edf5;
+            --text-secondary: #a0aec0;
+            --border-color: rgba(74, 158, 255, 0.2);
+        }
         
         * {
             margin: 0;
@@ -13,879 +23,678 @@
             box-sizing: border-box;
         }
         
-        :root {
-            --parchment: #f4e8d0;
-            --aged-paper: #e8dcc4;
-            --ink-black: #2a1810;
-            --sepia-brown: #6b4423;
-            --vermillion: #c1440e;
-            --gold-leaf: #d4af37;
-            --dark-blue: #1a3a52;
-            --sage: #8b9a7d;
-        }
-        
         body {
-            font-family: 'Crimson Pro', serif;
-            background: linear-gradient(135deg, var(--aged-paper) 0%, var(--parchment) 100%);
-            color: var(--ink-black);
-            overflow: hidden;
+            font-family: 'Work Sans', sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #0d1420 50%, #1a1f2e 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
             position: relative;
         }
         
-        /* Parchment texture overlay */
+        /* Animated background stars */
         body::before {
             content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(107, 68, 35, 0.03) 2px, rgba(107, 68, 35, 0.03) 4px),
-                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(107, 68, 35, 0.03) 2px, rgba(107, 68, 35, 0.03) 4px);
-            opacity: 0.4;
-            pointer-events: none;
-        }
-        
-        /* Aged paper stains */
-        body::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(ellipse at 20% 30%, rgba(193, 68, 14, 0.08) 0%, transparent 40%),
-                radial-gradient(ellipse at 80% 70%, rgba(107, 68, 35, 0.08) 0%, transparent 40%),
-                radial-gradient(ellipse at 50% 50%, rgba(193, 68, 14, 0.05) 0%, transparent 60%);
-            pointer-events: none;
-        }
-        
-        #canvas-container {
-            width: 100vw;
-            height: 100vh;
-            cursor: grab;
-        }
-        
-        #canvas-container:active {
-            cursor: grabbing;
-        }
-        
-        header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 2.5rem 3rem;
-            z-index: 100;
-            background: linear-gradient(180deg, rgba(244, 232, 208, 0.95) 0%, transparent 100%);
-        }
-        
-        h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--ink-black);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            text-shadow: 2px 2px 0 rgba(212, 175, 55, 0.3);
-            position: relative;
-            display: inline-block;
-        }
-        
-        h1::first-letter {
-            font-size: 1.4em;
-            color: var(--vermillion);
-            text-shadow: 3px 3px 0 rgba(212, 175, 55, 0.4);
-        }
-        
-        h1::after {
-            content: '⚜';
-            position: absolute;
-            right: -40px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gold-leaf);
-            font-size: 0.5em;
-            opacity: 0.6;
-        }
-        
-        .subtitle {
-            font-family: 'IM Fell English', serif;
-            font-size: 1.1rem;
-            font-style: italic;
-            color: var(--sepia-brown);
-            letter-spacing: 0.15em;
-            margin-top: 0.75rem;
-            opacity: 0.9;
-        }
-        
-        /* Popup Modal - Illuminated Manuscript Style */
-        .popup-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(42, 24, 16, 0.85);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 80%, white, transparent);
+            background-size: 200% 200%;
+            background-position: 0% 0%;
+            opacity: 0.4;
+            animation: twinkle 60s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
         }
         
-        .popup-overlay.active {
-            display: flex;
-            animation: fadeIn 0.4s ease forwards;
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
         }
         
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-        
-        .popup {
-            background: linear-gradient(135deg, #f8f2e4 0%, #f4e8d0 100%);
-            border: 4px solid var(--sepia-brown);
-            border-radius: 8px;
-            padding: 3.5rem 3rem 3rem;
-            max-width: 600px;
-            width: 90%;
-            position: relative;
-            box-shadow: 
-                0 0 0 1px var(--gold-leaf),
-                0 20px 60px rgba(42, 24, 16, 0.6),
-                inset 0 0 40px rgba(212, 175, 55, 0.1);
-            transform: scale(0.85);
-            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-        
-        /* Decorative corner ornaments */
-        .popup::before,
-        .popup::after {
-            content: '❦';
-            position: absolute;
-            font-size: 2rem;
-            color: var(--vermillion);
-            opacity: 0.3;
-        }
-        
-        .popup::before {
-            top: 15px;
-            left: 15px;
-        }
-        
-        .popup::after {
-            bottom: 15px;
-            right: 15px;
-            transform: rotate(180deg);
-        }
-        
-        @keyframes popIn {
-            to { transform: scale(1); }
-        }
-        
-        .close-btn {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: var(--parchment);
-            border: 2px solid var(--sepia-brown);
-            color: var(--sepia-brown);
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            font-size: 1.6rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Cinzel', serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(42, 24, 16, 0.2);
-        }
-        
-        .close-btn:hover {
-            background: var(--vermillion);
-            color: var(--parchment);
-            transform: rotate(90deg);
-            border-color: var(--vermillion);
-            box-shadow: 0 4px 12px rgba(193, 68, 14, 0.4);
-        }
-        
-        .popup h2 {
-            font-family: 'Cinzel', serif;
-            font-size: 2.2rem;
-            font-weight: 900;
-            margin-bottom: 0.5rem;
-            color: var(--ink-black);
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            position: relative;
-            padding-bottom: 1rem;
-        }
-        
-        .popup h2::first-letter {
-            font-size: 1.6em;
-            color: var(--vermillion);
-            float: left;
-            line-height: 0.85;
-            margin-right: 0.1em;
-            text-shadow: 2px 2px 0 rgba(212, 175, 55, 0.3);
-        }
-        
-        .popup h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(to right, var(--vermillion), transparent);
-        }
-        
-        .epic-meta {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin: 1.5rem 0;
-            padding: 1.25rem;
-            background: rgba(232, 220, 196, 0.4);
-            border-left: 3px solid var(--gold-leaf);
-            font-size: 0.9rem;
-        }
-        
-        .meta-item {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .meta-label {
-            font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: var(--sepia-brown);
-            margin-bottom: 0.3rem;
-            font-weight: 600;
-        }
-        
-        .meta-value {
-            font-family: 'IM Fell English', serif;
-            font-style: italic;
-            color: var(--ink-black);
-            line-height: 1.5;
-        }
-        
-        .popup .summary {
-            line-height: 1.9;
-            color: var(--ink-black);
-            margin: 1.5rem 0;
-            font-size: 1.05rem;
-            text-align: justify;
-            text-indent: 2em;
-            font-family: 'Crimson Pro', serif;
-        }
-        
-        .popup .quote-section {
-            margin: 2rem 0;
-            padding: 1.5rem;
-            background: rgba(212, 175, 55, 0.08);
-            border-left: 4px solid var(--gold-leaf);
-            border-radius: 4px;
-            position: relative;
-        }
-        
-        .popup .quote-section::before {
-            content: '"';
-            position: absolute;
-            top: -10px;
-            left: 10px;
-            font-size: 4rem;
-            font-family: 'Cinzel', serif;
-            color: var(--gold-leaf);
-            opacity: 0.3;
-            line-height: 1;
-        }
-        
-        .popup .quote-text {
-            font-family: 'IM Fell English', serif;
-            font-style: italic;
-            font-size: 1.1rem;
-            color: var(--ink-black);
-            line-height: 1.8;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
             position: relative;
             z-index: 1;
         }
         
-        .popup .coordinates {
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 2px solid rgba(107, 68, 35, 0.2);
-            font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            color: var(--sepia-brown);
-            letter-spacing: 0.1em;
+        header {
             text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
         }
         
-        /* Instructions - Manuscript style */
-        .instructions {
-            position: absolute;
-            bottom: 2rem;
-            right: 2rem;
-            background: rgba(244, 232, 208, 0.95);
-            border: 3px solid var(--sepia-brown);
-            border-radius: 6px;
-            padding: 1.75rem;
-            backdrop-filter: blur(10px);
-            z-index: 100;
-            max-width: 280px;
-            box-shadow: 
-                0 0 0 1px rgba(212, 175, 55, 0.4),
-                0 8px 20px rgba(42, 24, 16, 0.3);
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
         }
         
-        .instructions h3 {
-            font-family: 'Cinzel', serif;
-            font-size: 1rem;
-            color: var(--ink-black);
-            margin-bottom: 1rem;
+        .subtitle {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--text-secondary);
+            font-weight: 300;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            border-bottom: 2px solid var(--gold-leaf);
-            padding-bottom: 0.5rem;
-            font-weight: 600;
         }
         
-        .instructions ul {
-            list-style: none;
-            font-size: 0.9rem;
-            line-height: 1.7;
-            font-family: 'IM Fell English', serif;
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: start;
         }
         
-        .instructions li {
-            margin-bottom: 0.6rem;
-            padding-left: 1.5rem;
+        @media (min-width: 1024px) {
+            .main-content {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+        
+        .globe-container {
+            background: var(--secondary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 60px rgba(74, 158, 255, 0.15);
             position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out 0.3s backwards;
         }
         
-        .instructions li::before {
-            content: '✦';
+        .globe-container::before {
+            content: '';
             position: absolute;
-            left: 0;
-            color: var(--vermillion);
-            font-size: 0.8em;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(74, 158, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
         }
         
-        /* Legend box */
-        .legend {
-            position: absolute;
-            bottom: 2rem;
-            left: 2rem;
-            background: rgba(244, 232, 208, 0.95);
-            border: 3px solid var(--sepia-brown);
-            border-radius: 6px;
-            padding: 1.75rem;
-            backdrop-filter: blur(10px);
-            z-index: 100;
-            max-width: 320px;
-            box-shadow: 
-                0 0 0 1px rgba(212, 175, 55, 0.4),
-                0 8px 20px rgba(42, 24, 16, 0.3);
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.5; }
         }
         
-        .legend h3 {
-            font-family: 'Cinzel', serif;
-            font-size: 1rem;
-            color: var(--ink-black);
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            border-bottom: 2px solid var(--gold-leaf);
-            padding-bottom: 0.5rem;
-            font-weight: 600;
+        #globe-canvas {
+            width: 100%;
+            height: 500px;
+            display: block;
+            border-radius: 10px;
+            position: relative;
+            z-index: 1;
         }
         
-        .legend-item {
+        .controls {
+            margin-top: 1.5rem;
             display: flex;
-            align-items: center;
-            margin-bottom: 0.75rem;
-            font-family: 'IM Fell English', serif;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, rgba(74, 158, 255, 0.2), rgba(74, 158, 255, 0.1));
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
             font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
         
-        .legend-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            margin-right: 0.75rem;
-            box-shadow: 0 0 8px currentColor;
+        .control-btn:hover {
+            background: linear-gradient(135deg, rgba(74, 158, 255, 0.4), rgba(74, 158, 255, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 158, 255, 0.3);
         }
         
-        /* Custom scrollbar for popup */
-        .popup::-webkit-scrollbar {
-            width: 8px;
+        .control-btn:active {
+            transform: translateY(0);
         }
         
-        .popup::-webkit-scrollbar-track {
-            background: var(--aged-paper);
+        .locations-panel {
+            background: var(--secondary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 60px rgba(74, 158, 255, 0.15);
+            animation: fadeIn 1s ease-out 0.5s backwards;
+            max-height: 700px;
+            overflow-y: auto;
         }
         
-        .popup::-webkit-scrollbar-thumb {
-            background: var(--sepia-brown);
-            border-radius: 4px;
+        .locations-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .locations-panel::-webkit-scrollbar-track {
+            background: rgba(74, 158, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .locations-panel::-webkit-scrollbar-thumb {
+            background: var(--accent-blue);
+            border-radius: 10px;
+        }
+        
+        .panel-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-blue);
+        }
+        
+        .location-item {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(74, 158, 255, 0.05);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-gold);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .location-item:hover {
+            background: rgba(74, 158, 255, 0.15);
+            transform: translateX(5px);
+            border-left-color: var(--accent-blue);
+        }
+        
+        .location-name {
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+            color: var(--text-primary);
+        }
+        
+        .location-coords {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-family: 'Courier New', monospace;
+        }
+        
+        .info-text {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            #globe-canvas {
+                height: 400px;
+            }
+            
+            .globe-container {
+                padding: 1.5rem;
+            }
+            
+            .locations-panel {
+                padding: 1.5rem;
+                max-height: 500px;
+            }
+            
+            .control-btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #globe-canvas {
+                height: 300px;
+            }
+            
+            .controls {
+                gap: 0.5rem;
+            }
+            
+            .control-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Epic Chronicles</h1>
-        <div class="subtitle">A Cartography of Timeless Tales</div>
-    </header>
-    
-    <div id="canvas-container"></div>
-    
-    <div class="legend">
-        <h3>Temporal Origins</h3>
-        <div class="legend-item">
-            <div class="legend-dot" style="background-color: #c1440e;"></div>
-            <span>Ancient (pre-500 CE)</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-dot" style="background-color: #d4af37;"></div>
-            <span>Medieval (500-1500 CE)</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-dot" style="background-color: #1a3a52;"></div>
-            <span>Renaissance+ (1500+ CE)</span>
-        </div>
-    </div>
-    
-    <div class="instructions">
-        <h3>Navigation</h3>
-        <ul>
-            <li>Drag to rotate the globe</li>
-            <li>Scroll to adjust distance</li>
-            <li>Click markers to reveal</li>
-        </ul>
-    </div>
-    
-    <div class="popup-overlay" id="popupOverlay">
-        <div class="popup" id="popup">
-            <button class="close-btn" id="closeBtn">×</button>
-            <h2 id="popupTitle"></h2>
-            <div class="epic-meta" id="epicMeta"></div>
-            <p class="summary" id="popupSummary"></p>
-            <div class="quote-section">
-                <div class="quote-text" id="popupQuote"></div>
+    <div class="container">
+        <header>
+            <h1>Terra</h1>
+            <p class="subtitle">Explore Our World</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="globe-container">
+                <canvas id="globe-canvas"></canvas>
+                <div class="controls">
+                    <button class="control-btn" onclick="toggleRotation()">Toggle Rotation</button>
+                    <button class="control-btn" onclick="resetView()">Reset View</button>
+                    <button class="control-btn" onclick="toggleMarkers()">Toggle Markers</button>
+                </div>
+                <p class="info-text">Drag to rotate • Scroll to zoom • Click markers to explore</p>
             </div>
-            <div class="coordinates" id="popupCoords"></div>
+            
+            <div class="locations-panel">
+                <h2 class="panel-title">Featured Locations</h2>
+                <div id="locations-list"></div>
+            </div>
         </div>
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Epic literature data with geographical locations
-        const epics = [
-            {
-                name: 'Mahabharata',
-                characters: 'Krishna, Arjuna, Yudhishthira, Karna',
-                place: 'Kurukshetra, Northern India',
-                timePeriod: 'Set ~1500–1000 BCE, Composed ~400 BCE – 400 CE',
-                summary: 'A colossal epic of dynastic war and moral dilemmas, centered on dharma, destiny, and human choice.',
-                quote: 'You have the right to perform your duty, but not to the fruits of your actions.',
-                lat: 29.9697,
-                lon: 76.8345,
-                era: 'ancient'
-            },
-            {
-                name: 'Odyssey',
-                characters: 'Odysseus, Penelope, Telemachus',
-                place: 'Mediterranean, Ithaca',
-                timePeriod: 'Set ~12th century BCE, Composed ~8th century BCE',
-                summary: 'Odysseus\' long return home, shaped by wit, endurance, and divine intervention.',
-                quote: 'There is nothing more admirable than when two people who see eye to eye keep house as man and wife.',
-                lat: 38.4350,
-                lon: 20.6117,
-                era: 'ancient'
-            },
-            {
-                name: 'Ragnarök',
-                characters: 'Odin, Thor, Loki',
-                place: 'Norse Cosmos',
-                timePeriod: 'Mythic future, Recorded ~13th century CE',
-                summary: 'The foretold apocalypse of Norse mythology, ending in destruction and rebirth.',
-                quote: 'Brothers will fight and kill each other, and the bonds of kinship will be sundered.',
-                lat: 60.1282,
-                lon: 18.6435,
-                era: 'medieval'
-            },
-            {
-                name: 'Journey to the West',
-                characters: 'Sun Wukong, Xuanzang',
-                place: 'China → India',
-                timePeriod: 'Set 7th century CE, Written 16th century CE',
-                summary: 'A spiritual and comic pilgrimage blending Buddhism, folklore, and fantasy.',
-                quote: 'Even a journey of a thousand miles begins with a single step.',
-                lat: 34.2667,
-                lon: 108.9000,
-                era: 'renaissance'
-            },
-            {
-                name: 'Arabian Nights',
-                characters: 'Scheherazade, Shahryar',
-                place: 'Middle East, South Asia',
-                timePeriod: 'Set 8th–14th century CE, Compiled 9th–15th century CE',
-                summary: 'Interlinked tales of survival, imagination, and human cunning framed by Scheherazade\'s storytelling.',
-                quote: 'Trust in Allah, but tie your camel.',
-                lat: 33.3152,
-                lon: 44.3661,
-                era: 'medieval'
-            },
-            {
-                name: 'Epic of Gilgamesh',
-                characters: 'Gilgamesh, Enkidu',
-                place: 'Uruk, Mesopotamia',
-                timePeriod: 'Set ~2700 BCE, Written ~2100–1200 BCE',
-                summary: 'A profound exploration of friendship, power, and the inevitability of death.',
-                quote: 'What you seek you shall never find. For when the Gods created man, they let death be his lot.',
-                lat: 31.3247,
-                lon: 45.6364,
-                era: 'ancient'
-            },
-            {
-                name: 'Canterbury Tales',
-                characters: 'Wife of Bath, The Knight, The Pardoner',
-                place: 'England',
-                timePeriod: 'Set 14th century CE, Written ~1387–1400 CE',
-                summary: 'A lively cross-section of medieval society revealed through storytelling pilgrims.',
-                quote: 'The lyf so short, the craft so long to lerne.',
-                lat: 51.2802,
-                lon: 1.0789,
-                era: 'medieval'
-            },
-            {
-                name: 'Iliad',
-                characters: 'Achilles, Hector, Agamemnon',
-                place: 'Troy',
-                timePeriod: 'Set ~12th century BCE, Composed ~8th century BCE',
-                summary: 'A war epic centered on honor, rage, and the tragic cost of glory.',
-                quote: 'Sing, O goddess, the anger of Achilles son of Peleus, that brought countless ills upon the Achaeans.',
-                lat: 39.9577,
-                lon: 26.2389,
-                era: 'ancient'
-            },
-            {
-                name: 'Ramayana',
-                characters: 'Rama, Sita, Hanuman, Ravana',
-                place: 'Ayodhya, Lanka',
-                timePeriod: 'Set Treta Yuga, Written ~500 BCE – 100 CE',
-                summary: 'The idealized journey of righteousness, devotion, and kingship.',
-                quote: 'Even if I have to give up my life, I will not abandon dharma.',
-                lat: 26.7922,
-                lon: 82.1998,
-                era: 'ancient'
-            },
-            {
-                name: 'The Divine Comedy',
-                characters: 'Dante, Virgil, Beatrice',
-                place: 'Hell, Purgatory, Heaven',
-                timePeriod: 'Set 1300 CE, Written 1308–1321 CE',
-                summary: 'An allegorical journey of the soul toward divine truth.',
-                quote: 'Abandon all hope, ye who enter here.',
-                lat: 43.7696,
-                lon: 11.2558,
-                era: 'medieval'
-            },
-            {
-                name: 'Paradise Lost',
-                characters: 'Adam, Eve, Satan, Jesus',
-                place: 'Heaven, Hell, Eden',
-                timePeriod: 'Biblical prehistory, Written 1667 CE',
-                summary: 'The fall and redemption of humanity through free will and divine grace.',
-                quote: 'Better to reign in Hell than serve in Heaven.',
-                lat: 51.5074,
-                lon: -0.1278,
-                era: 'renaissance'
-            },
-            {
-                name: 'Meghnad Vadh Kavya',
-                characters: 'Meghnad, Ravana, Lakshmana',
-                place: 'Lanka',
-                timePeriod: 'Set Treta Yuga, Written 1861 CE',
-                summary: 'A tragic, heroic retelling of the Ramayana from the antagonist\'s perspective.',
-                quote: 'Victory and defeat are both fleeting; only honor endures through time.',
-                lat: 7.8731,
-                lon: 80.7718,
-                era: 'renaissance'
-            }
+        // Featured locations with accurate coordinates
+        const locations = [
+            { name: 'Statue of Liberty, USA', lat: 40.6892, lon: -74.0445, desc: 'New York Harbor' },
+            { name: 'Eiffel Tower, France', lat: 48.8584, lon: 2.2945, desc: 'Paris' },
+            { name: 'Great Wall of China', lat: 40.4319, lon: 116.5704, desc: 'Beijing' },
+            { name: 'Taj Mahal, India', lat: 27.1751, lon: 78.0421, desc: 'Agra' },
+            { name: 'Machu Picchu, Peru', lat: -13.1631, lon: -72.5450, desc: 'Cusco Region' },
+            { name: 'Christ the Redeemer, Brazil', lat: -22.9519, lon: -43.2105, desc: 'Rio de Janeiro' },
+            { name: 'Pyramids of Giza, Egypt', lat: 29.9792, lon: 31.1342, desc: 'Cairo' },
+            { name: 'Sydney Opera House, Australia', lat: -33.8568, lon: 151.2153, desc: 'Sydney' },
+            { name: 'Big Ben, UK', lat: 51.5007, lon: -0.1246, desc: 'London' },
+            { name: 'Mount Fuji, Japan', lat: 35.3606, lon: 138.7274, desc: 'Honshu' },
+            { name: 'Colosseum, Italy', lat: 41.8902, lon: 12.4922, desc: 'Rome' },
+            { name: 'Burj Khalifa, UAE', lat: 25.1972, lon: 55.2744, desc: 'Dubai' }
         ];
         
-        // Color mapping for eras
-        const eraColors = {
-            ancient: 0xc1440e,      // Vermillion
-            medieval: 0xd4af37,     // Gold
-            renaissance: 0x1a3a52   // Dark Blue
-        };
+        // Three.js setup
+        let scene, camera, renderer, globe, markers = [], controls;
+        let autoRotate = true;
+        let showMarkers = true;
+        let mouseDown = false;
+        let mouseX = 0, mouseY = 0;
+        let targetRotationX = 0, targetRotationY = 0;
+        let rotationX = 0, rotationY = 0;
         
-        // Scene setup
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
-        
-        // Create Earth with aged parchment aesthetic
-        const textureLoader = new THREE.TextureLoader();
-        const earthGeometry = new THREE.SphereGeometry(5, 64, 64);
-        
-        // Use sepia/antique styled Earth textures
-        const earthTexture = textureLoader.load('https://unpkg.com/three-globe@2.24.4/example/img/earth-day.jpg');
-        const bumpTexture = textureLoader.load('https://unpkg.com/three-globe@2.24.4/example/img/earth-topology.png');
-        
-        const earthMaterial = new THREE.MeshPhongMaterial({
-            map: earthTexture,
-            bumpMap: bumpTexture,
-            bumpScale: 0.2,
-            color: 0xe8dcc4,
-            shininess: 8
-        });
-        const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-        scene.add(earth);
-        
-        // Subtle atmosphere
-        const atmosphereGeometry = new THREE.SphereGeometry(5.15, 64, 64);
-        const atmosphereMaterial = new THREE.ShaderMaterial({
-            vertexShader: `
-                varying vec3 vNormal;
-                void main() {
-                    vNormal = normalize(normalMatrix * normal);
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                }
-            `,
-            fragmentShader: `
-                varying vec3 vNormal;
-                void main() {
-                    float intensity = pow(0.5 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
-                    gl_FragColor = vec4(0.85, 0.75, 0.6, 1.0) * intensity;
-                }
-            `,
-            blending: THREE.AdditiveBlending,
-            side: THREE.BackSide,
-            transparent: true
-        });
-        const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
-        scene.add(atmosphere);
-        
-        // Warm antiquarian lighting
-        const ambientLight = new THREE.AmbientLight(0xf4e8d0, 1.5);
-        scene.add(ambientLight);
-        
-        const sunLight = new THREE.DirectionalLight(0xffe4b5, 1.2);
-        sunLight.position.set(8, 5, 5);
-        scene.add(sunLight);
-        
-        const fillLight = new THREE.DirectionalLight(0xd4af37, 0.4);
-        fillLight.position.set(-8, -3, -5);
-        scene.add(fillLight);
-        
-        // Create location markers
-        const markers = [];
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        
-        epics.forEach(epic => {
-            const marker = createMarker(epic.lat, epic.lon, epic.era);
-            marker.userData = epic;
-            earth.add(marker);
-            markers.push(marker);
-        });
-        
-        function createMarker(lat, lon, era) {
-            const group = new THREE.Group();
+        function init() {
+            const canvas = document.getElementById('globe-canvas');
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
             
-            // Marker sphere with era-specific color
-            const markerGeometry = new THREE.SphereGeometry(0.09, 16, 16);
-            const markerMaterial = new THREE.MeshPhongMaterial({
-                color: eraColors[era],
-                emissive: eraColors[era],
-                emissiveIntensity: 0.6,
-                shininess: 80
+            // Scene
+            scene = new THREE.Scene();
+            
+            // Camera
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.z = 3;
+            
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ 
+                canvas: canvas, 
+                antialias: true, 
+                alpha: true 
             });
-            const markerMesh = new THREE.Mesh(markerGeometry, markerMaterial);
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(window.devicePixelRatio);
             
-            // Glowing ring
-            const ringGeometry = new THREE.RingGeometry(0.12, 0.17, 32);
-            const ringMaterial = new THREE.MeshBasicMaterial({
-                color: eraColors[era],
+            // Create Earth
+            createGlobe();
+            
+            // Create markers
+            createMarkers();
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 3, 5);
+            scene.add(directionalLight);
+            
+            // Mouse controls
+            canvas.addEventListener('mousedown', onMouseDown);
+            canvas.addEventListener('mousemove', onMouseMove);
+            canvas.addEventListener('mouseup', onMouseUp);
+            canvas.addEventListener('wheel', onWheel);
+            
+            // Touch controls
+            canvas.addEventListener('touchstart', onTouchStart);
+            canvas.addEventListener('touchmove', onTouchMove);
+            canvas.addEventListener('touchend', onTouchEnd);
+            
+            // Handle resize
+            window.addEventListener('resize', onWindowResize);
+            
+            // Populate locations list
+            populateLocationsList();
+            
+            // Start animation
+            animate();
+        }
+        
+        function createGlobe() {
+            const geometry = new THREE.SphereGeometry(1, 128, 128);
+            
+            // Load actual Earth texture
+            const textureLoader = new THREE.TextureLoader();
+            
+            // Using NASA's Blue Marble texture from a reliable CDN
+            const earthTexture = textureLoader.load(
+                'https://unpkg.com/three-globe@2.31.0/example/img/earth-blue-marble.jpg',
+                function() {
+                    console.log('Earth texture loaded');
+                },
+                undefined,
+                function() {
+                    // Fallback to a different source if first fails
+                    console.log('Trying alternate texture source');
+                    earthMaterial.map = textureLoader.load('https://raw.githubusercontent.com/turban/webgl-earth/master/images/2_no_clouds_4k.jpg');
+                    earthMaterial.needsUpdate = true;
+                }
+            );
+            
+            const bumpTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-topology.png');
+            const specularTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-water.png');
+            
+            const earthMaterial = new THREE.MeshPhongMaterial({
+                map: earthTexture,
+                bumpMap: bumpTexture,
+                bumpScale: 0.01,
+                specularMap: specularTexture,
+                specular: new THREE.Color(0x333333),
+                shininess: 25
+            });
+            
+            globe = new THREE.Group();
+            const earthMesh = new THREE.Mesh(geometry, earthMaterial);
+            globe.add(earthMesh);
+            
+            // Add cloud layer
+            const cloudGeometry = new THREE.SphereGeometry(1.01, 64, 64);
+            const cloudTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-clouds.png');
+            const cloudMaterial = new THREE.MeshPhongMaterial({
+                map: cloudTexture,
                 transparent: true,
-                opacity: 0.5,
-                side: THREE.DoubleSide
+                opacity: 0.4,
+                depthWrite: false
             });
-            const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-            ring.rotation.x = Math.PI / 2;
+            const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
+            globe.add(clouds);
+            globe.userData.clouds = clouds;
             
-            group.add(markerMesh);
-            group.add(ring);
+            // Add atmosphere glow using shader
+            const atmosphereGeometry = new THREE.SphereGeometry(1.1, 64, 64);
+            const atmosphereMaterial = new THREE.ShaderMaterial({
+                transparent: true,
+                side: THREE.BackSide,
+                uniforms: {
+                    c: { value: 0.4 },
+                    p: { value: 6.5 }
+                },
+                vertexShader: `
+                    varying vec3 vNormal;
+                    void main() {
+                        vNormal = normalize(normalMatrix * normal);
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform float c;
+                    uniform float p;
+                    varying vec3 vNormal;
+                    void main() {
+                        float intensity = pow(c - dot(vNormal, vec3(0.0, 0.0, 1.0)), p);
+                        gl_FragColor = vec4(0.3, 0.6, 1.0, 1.0) * intensity;
+                    }
+                `
+            });
+            const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+            globe.add(atmosphere);
             
-            // Position on sphere
-            const phi = (90 - lat) * (Math.PI / 180);
-            const theta = (lon + 180) * (Math.PI / 180);
-            
-            const x = -5.15 * Math.sin(phi) * Math.cos(theta);
-            const y = 5.15 * Math.cos(phi);
-            const z = 5.15 * Math.sin(phi) * Math.sin(theta);
-            
-            group.position.set(x, y, z);
-            group.lookAt(0, 0, 0);
-            
-            // Animate ring
-            group.userData.animate = () => {
-                const scale = 1 + Math.sin(Date.now() * 0.002) * 0.25;
-                ring.scale.set(scale, scale, 1);
-                ring.material.opacity = 0.5 - (scale - 1) * 0.4;
-            };
-            
-            return group;
+            scene.add(globe);
         }
         
-        camera.position.z = 15;
-        
-        // Mouse interaction
-        let isDragging = false;
-        let previousMousePosition = { x: 0, y: 0 };
-        let hoveredMarker = null;
-        
-        renderer.domElement.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            previousMousePosition = { x: e.clientX, y: e.clientY };
-        });
-        
-        renderer.domElement.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                const deltaX = e.clientX - previousMousePosition.x;
-                const deltaY = e.clientY - previousMousePosition.y;
-                
-                earth.rotation.y += deltaX * 0.005;
-                earth.rotation.x += deltaY * 0.005;
-                
-                previousMousePosition = { x: e.clientX, y: e.clientY };
-            } else {
-                // Raycasting for hover
-                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-                
-                raycaster.setFromCamera(mouse, camera);
-                const intersects = raycaster.intersectObjects(markers, true);
-                
-                if (hoveredMarker) {
-                    hoveredMarker.children[0].material.emissiveIntensity = 0.6;
-                    hoveredMarker = null;
-                    renderer.domElement.style.cursor = 'grab';
-                }
-                
-                if (intersects.length > 0) {
-                    hoveredMarker = intersects[0].object.parent;
-                    hoveredMarker.children[0].material.emissiveIntensity = 1.2;
-                    renderer.domElement.style.cursor = 'pointer';
-                }
-            }
-        });
-        
-        renderer.domElement.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-        
-        renderer.domElement.addEventListener('click', (e) => {
-            if (!isDragging) {
-                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-                
-                raycaster.setFromCamera(mouse, camera);
-                const intersects = raycaster.intersectObjects(markers, true);
-                
-                if (intersects.length > 0) {
-                    const marker = intersects[0].object.parent;
-                    showPopup(marker.userData);
-                }
-            }
-        });
-        
-        // Zoom with mouse wheel
-        renderer.domElement.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            camera.position.z += e.deltaY * 0.01;
-            camera.position.z = Math.max(8, Math.min(25, camera.position.z));
-        });
-        
-        // Popup functions
-        function showPopup(epic) {
-            document.getElementById('popupTitle').textContent = epic.name;
-            
-            const metaHTML = `
-                <div class="meta-item">
-                    <div class="meta-label">Characters</div>
-                    <div class="meta-value">${epic.characters}</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Setting</div>
-                    <div class="meta-value">${epic.place}</div>
-                </div>
-                <div class="meta-item" style="grid-column: span 2;">
-                    <div class="meta-label">Time Period</div>
-                    <div class="meta-value">${epic.timePeriod}</div>
-                </div>
-            `;
-            document.getElementById('epicMeta').innerHTML = metaHTML;
-            
-            document.getElementById('popupSummary').textContent = epic.summary;
-            document.getElementById('popupQuote').textContent = epic.quote;
-            document.getElementById('popupCoords').textContent = `Coordinates: ${epic.lat.toFixed(4)}°, ${epic.lon.toFixed(4)}°`;
-            document.getElementById('popupOverlay').classList.add('active');
+        function createMarkers() {
+            locations.forEach(location => {
+                const marker = createMarker(location);
+                markers.push(marker);
+                globe.add(marker);
+            });
         }
         
-        function closePopup() {
-            document.getElementById('popupOverlay').classList.remove('active');
+        function createMarker(location) {
+            const markerGroup = new THREE.Group();
+            
+            // Convert lat/lon to 3D position
+            const phi = (90 - location.lat) * Math.PI / 180;
+            const theta = (location.lon + 180) * Math.PI / 180;
+            const radius = 1.01;
+            
+            const x = -(radius * Math.sin(phi) * Math.cos(theta));
+            const y = radius * Math.cos(phi);
+            const z = radius * Math.sin(phi) * Math.sin(theta);
+            
+            // Pin marker
+            const pinGeometry = new THREE.ConeGeometry(0.02, 0.08, 8);
+            const pinMaterial = new THREE.MeshPhongMaterial({
+                color: 0xffd700,
+                emissive: 0xff6600,
+                shininess: 100
+            });
+            const pin = new THREE.Mesh(pinGeometry, pinMaterial);
+            pin.position.set(x, y, z);
+            pin.lookAt(0, 0, 0);
+            pin.rotateX(Math.PI);
+            
+            // Pulsing glow
+            const glowGeometry = new THREE.SphereGeometry(0.03, 16, 16);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffd700,
+                transparent: true,
+                opacity: 0.6
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            glow.position.set(x, y, z);
+            
+            markerGroup.add(pin);
+            markerGroup.add(glow);
+            markerGroup.userData = location;
+            
+            // Animate glow
+            markerGroup.userData.glowPhase = Math.random() * Math.PI * 2;
+            
+            return markerGroup;
         }
         
-        document.getElementById('closeBtn').addEventListener('click', closePopup);
-        document.getElementById('popupOverlay').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('popupOverlay')) {
-                closePopup();
-            }
-        });
-        
-        // Animation loop
         function animate() {
             requestAnimationFrame(animate);
             
-            // Very slow auto-rotation
-            if (!isDragging) {
-                earth.rotation.y += 0.0008;
+            // Auto rotation
+            if (autoRotate && !mouseDown) {
+                targetRotationY += 0.001;
             }
             
-            // Animate markers
+            // Smooth rotation
+            rotationX += (targetRotationX - rotationX) * 0.05;
+            rotationY += (targetRotationY - rotationY) * 0.05;
+            
+            globe.rotation.x = rotationX;
+            globe.rotation.y = rotationY;
+            
+            // Rotate clouds slightly faster than Earth for realism
+            if (globe.userData.clouds) {
+                globe.userData.clouds.rotation.y += 0.0002;
+            }
+            
+            // Animate marker glows
             markers.forEach(marker => {
-                if (marker.userData.animate) {
-                    marker.userData.animate();
+                marker.userData.glowPhase += 0.05;
+                const glow = marker.children[1];
+                if (glow && showMarkers) {
+                    glow.material.opacity = 0.4 + Math.sin(marker.userData.glowPhase) * 0.3;
+                    glow.scale.setScalar(1 + Math.sin(marker.userData.glowPhase) * 0.2);
                 }
+                marker.visible = showMarkers;
             });
             
             renderer.render(scene, camera);
         }
         
-        animate();
+        // Mouse controls
+        function onMouseDown(e) {
+            mouseDown = true;
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        }
         
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
+        function onMouseMove(e) {
+            if (!mouseDown) return;
+            
+            const deltaX = e.clientX - mouseX;
+            const deltaY = e.clientY - mouseY;
+            
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            targetRotationY += deltaX * 0.005;
+            targetRotationX += deltaY * 0.005;
+            targetRotationX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, targetRotationX));
+        }
+        
+        function onMouseUp() {
+            mouseDown = false;
+        }
+        
+        function onWheel(e) {
+            e.preventDefault();
+            camera.position.z += e.deltaY * 0.001;
+            camera.position.z = Math.max(1.5, Math.min(5, camera.position.z));
+        }
+        
+        // Touch controls
+        let touchStartX = 0, touchStartY = 0;
+        
+        function onTouchStart(e) {
+            if (e.touches.length === 1) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                mouseDown = true;
+            }
+        }
+        
+        function onTouchMove(e) {
+            if (e.touches.length === 1 && mouseDown) {
+                const deltaX = e.touches[0].clientX - touchStartX;
+                const deltaY = e.touches[0].clientY - touchStartY;
+                
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                
+                targetRotationY += deltaX * 0.005;
+                targetRotationX += deltaY * 0.005;
+                targetRotationX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, targetRotationX));
+            }
+        }
+        
+        function onTouchEnd() {
+            mouseDown = false;
+        }
+        
+        function onWindowResize() {
+            const canvas = document.getElementById('globe-canvas');
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
+            
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+            renderer.setSize(width, height);
+        }
+        
+        // Control functions
+        function toggleRotation() {
+            autoRotate = !autoRotate;
+        }
+        
+        function resetView() {
+            targetRotationX = 0;
+            targetRotationY = 0;
+            camera.position.z = 3;
+        }
+        
+        function toggleMarkers() {
+            showMarkers = !showMarkers;
+        }
+        
+        function flyToLocation(location) {
+            const phi = (90 - location.lat) * Math.PI / 180;
+            const theta = (location.lon + 180) * Math.PI / 180;
+            
+            targetRotationY = theta - Math.PI;
+            targetRotationX = -phi + Math.PI / 2;
+        }
+        
+        function populateLocationsList() {
+            const list = document.getElementById('locations-list');
+            locations.forEach(location => {
+                const item = document.createElement('div');
+                item.className = 'location-item';
+                item.innerHTML = `
+                    <div class="location-name">${location.name}</div>
+                    <div class="location-coords">${location.lat.toFixed(4)}°, ${location.lon.toFixed(4)}°</div>
+                `;
+                item.onclick = () => flyToLocation(location);
+                list.appendChild(item);
+            });
+        }
+        
+        // Initialize on load
+        window.addEventListener('load', init);
     </script>
 </body>
 </html>
